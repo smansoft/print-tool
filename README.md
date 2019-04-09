@@ -3,3 +3,4 @@ Reflection-based suite of facades over Logger, that provides logging of complex 
 
 You can find example of usage of this suite in Unit Test of this project.
 
+For more info, please, read this post: http://blog.smansoft.com/2019/04/09/java-print-tool/.
