@@ -12,12 +12,12 @@
 
 	<properties>
 		<!-- logging -->
-		<slf4j.version>1.7.25</slf4j.version>
+		<slf4j.version>1.7.26</slf4j.version>
 		<logback.version>1.2.3</logback.version>
 
 		<junit.version>4.12</junit.version>
 		<!-- Plug-ins -->
-		<maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<compiler-source.version>1.8</compiler-source.version>
 		<compiler-target.version>1.8</compiler-target.version>
 
@@ -26,13 +26,10 @@
 -->
 		<compiler-debug-arg>-g:none</compiler-debug-arg>
 
-		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
 
-		<maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
+		<maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
 		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
-
-		<maven-war-plugin.version>3.1.0</maven-war-plugin.version>
-		<jaxb2-maven-plugin.version>2.3.1</jaxb2-maven-plugin.version>
 		<!--  -->
 		<target2.folder.name>bin</target2.folder.name>
 
@@ -167,8 +164,14 @@
 									file="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${project.packaging}">
 								</delete>
 								<delete
+									file="${basedir}/${target.root.dir}/${target2.folder.name}/${project.artifactId}.${project.packaging}">
+								</delete>
+								<delete
 									file="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${arc.fext}">
 								</delete>
+				                <delete>
+                   					<fileset dir="${basedir}/${target.root.dir}/${target2.folder.name}/${libs.dir}" includes="*" />
+                				</delete>
 							</target>
 						</configuration>
 					</execution>

@@ -36,25 +36,16 @@ allprojects  {
     }
 
     ext {
-        slf4j_version        		= '1.7.25'
+        slf4j_version        		= '1.7.26'
         logback_version        		= '1.2.3'
         
         junit_version               	= '4.12'
         
-        maven_compiler_plugin_version   = '3.6.1'
         compiler_source_version         = '1.8'
         compiler_target_version         = '1.8'
 
 //        compiler_debug_arg      	= '-g:source,lines,vars'
       compiler_debug_arg      	= '-g:none'
-
-        maven_jar_plugin_version        = '3.0.2'
-
-        maven_dependency_plugin_version = '3.0.1'
-        maven_antrun_plugin_version     = '1.8'
-
-        maven_war_plugin_version        = '3.1.0'
-        jaxb2_maven_plugin_version      = '2.3.1'
         
         target2_folder_name             = 'bin'
 
