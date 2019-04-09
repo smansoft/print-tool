@@ -3,6 +3,9 @@
 .settings/
 .gradle/
 
+.classpath
+.project 
+
 *.class
 *.jar
 *.war
