@@ -10,7 +10,7 @@ buildscript {
 allprojects  {
     apply plugin: 'maven'
 
-    group = 'com.smansoft'
+    group = 'com.smansoft.tools'
 
 	if (project.hasProperty('projectVersion')) {
 		project.version = project.projectVersion

@@ -1,0 +1,201 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.smansoft.tools</groupId>
+	<artifactId>print-tool</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+
+	<name>currip-installer</name>
+
+	<properties>
+		<!-- logging -->
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback.version>1.2.3</logback.version>
+
+		<junit.version>4.12</junit.version>
+		<!-- Plug-ins -->
+		<maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+		<compiler-source.version>1.8</compiler-source.version>
+		<compiler-target.version>1.8</compiler-target.version>
+
+<!--
+		<compiler-debug-arg>-g:source,lines,vars</compiler-debug-arg>
+-->
+		<compiler-debug-arg>-g:none</compiler-debug-arg>
+
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+
+		<maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
+		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+
+		<maven-war-plugin.version>3.1.0</maven-war-plugin.version>
+		<jaxb2-maven-plugin.version>2.3.1</jaxb2-maven-plugin.version>
+		<!--  -->
+		<target2.folder.name>bin</target2.folder.name>
+
+		<target.root.dir>../</target.root.dir>
+
+		<libs.dir>libs</libs.dir>
+		<logs.dir>logs</logs.dir>
+		<jar.fext>jar</jar.fext>
+		<war.fext>war</war.fext>
+		<arc.fext>zip</arc.fext>
+		<!--  -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-core</artifactId>
+		    <version>${logback.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>jcl-over-slf4j</artifactId>
+		    <version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+		                <version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${compiler-source.version}</source>
+					<target>${compiler-target.version}</target>
+	        			<compilerArgs>
+				            <arg>${compiler-debug-arg}</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>${maven-dependency-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies-target</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/${libs.dir}</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-dependencies-bin</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/${target.root.dir}/${target2.folder.name}/${libs.dir}</outputDirectory>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-plugin.version}</version>
+				<executions>
+
+					<execution>
+						<id>pack_zip</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<zip destfile="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${arc.fext}">
+									<zipfileset dir="${project.build.directory}"
+										includes="${libs.dir}/**" />
+									<zipfileset dir="${project.build.directory}"
+										includes="${project.build.finalName}.${project.packaging}" />
+									<zipfileset dir="${basedir}" includes="readme.txt" />
+								</zip>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>clean_target2</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<delete
+									file="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${project.packaging}">
+								</delete>
+								<delete
+									file="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${arc.fext}">
+								</delete>
+							</target>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>copy_to_target2</id>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy quiet="true" overwrite="true" force="true"
+									file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+									tofile="${basedir}/${target.root.dir}/${target2.folder.name}/${project.build.finalName}.${project.packaging}">
+								</copy>
+								<copy quiet="true" overwrite="true" force="true"
+									file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+									tofile="${basedir}/${target.root.dir}/${target2.folder.name}/${project.artifactId}.${project.packaging}">
+								</copy>
+							</target>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
