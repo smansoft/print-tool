@@ -1,0 +1,16 @@
+.metadata/
+.recommenders/
+.settings/
+.gradle/
+
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+Debug
+Release
+
+target
+build

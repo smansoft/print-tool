@@ -1,0 +1,172 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+allprojects  {
+    apply plugin: 'maven'
+
+    group = 'com.smansoft'
+
+	if (project.hasProperty('projectVersion')) {
+		project.version = project.projectVersion
+	} else {
+		project.version = '0.0.1'
+	}
+
+    apply plugin: 'java'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+    
+    repositories {
+        jcenter()
+        mavenLocal()
+        maven { url "http://repo2.maven.org/maven2" }
+        maven { url "http://repo.maven.apache.org/maven2" }
+		maven { url "http://central.maven.org/maven2" }
+    }
+
+    ext {
+        slf4j_version        		= '1.7.25'
+        logback_version        		= '1.2.3'
+        
+        junit_version               	= '4.12'
+        
+        maven_compiler_plugin_version   = '3.6.1'
+        compiler_source_version         = '1.8'
+        compiler_target_version         = '1.8'
+
+//        compiler_debug_arg      	= '-g:source,lines,vars'
+      compiler_debug_arg      	= '-g:none'
+
+        maven_jar_plugin_version        = '3.0.2'
+
+        maven_dependency_plugin_version = '3.0.1'
+        maven_antrun_plugin_version     = '1.8'
+
+        maven_war_plugin_version        = '3.1.0'
+        jaxb2_maven_plugin_version      = '2.3.1'
+        
+        target2_folder_name             = 'bin'
+
+        target_root_dir                 = '../'
+
+        bin_dir				            = 'bin'
+        libs_dir			            = 'libs'
+        logs_dir			            = 'logs'
+        src_dir				            = 'src'
+        src_clases_dir			        = 'src/main/java'
+        
+        project_build_sourceEncoding    = 'UTF-8'
+    }
+
+}
+	
+apply plugin: 'maven'
+
+description = 'print-tool'
+
+dependencies {
+	compile(group: 'ch.qos.logback',    			name: 'logback-classic',        version: logback_version)
+	compile(group: 'ch.qos.logback',    			name: 'logback-core',        	version: logback_version)
+	compile(group: 'org.slf4j',         			name: 'jcl-over-slf4j',         version: slf4j_version)
+	compile(group: 'org.slf4j',         			name: 'slf4j-api',           	version: slf4j_version)
+	
+	testCompile(group: 'junit',                     name: 'junit',                  version: junit_version)
+}
+
+compileJava {
+	options.compilerArgs << compiler_debug_arg
+}
+
+assemble.doFirst {
+}
+
+assemble.doLast {
+}
+
+build.doFirst {
+}
+
+build.doLast {
+}
+
+task copyDependLibs(type: Copy) {
+	from (configurations.runtime)
+	into ("$target_root_dir/$bin_dir/$libs_dir")
+	doFirst {
+	}
+	doLast {
+	}
+}
+
+task zip(type: Zip) {
+	from (jar.archivePath)
+	into("libs") {
+		from configurations.runtime
+	}    
+	into("src") {
+		from "$src_dir"
+	}    
+	doFirst {
+	}
+	doLast {
+		copy {
+			from (archivePath)
+			into ("$target_root_dir/$bin_dir")
+		}
+	}
+}
+
+task copyJar(type: Copy) {
+	from 	(jar.archivePath)
+	into 	("$target_root_dir/$bin_dir")
+	doFirst {
+	}
+	doLast {
+	}
+}
+
+task copyRenameJar(type: Copy) {
+	from 	(jar.archivePath)
+	into 	("$target_root_dir/$bin_dir")
+	rename 	("$jar.archiveName","$jar.baseName.$jar.extension")
+	doFirst {
+	}
+	doLast {
+	}
+}
+
+task buildDeploy {
+	dependsOn copyDependLibs
+	dependsOn zip
+	dependsOn copyJar
+	dependsOn copyRenameJar
+}
+
+task cleanRemove(type: Delete) {
+	delete ("$target_root_dir/$bin_dir/$jar.baseName.$jar.extension",
+		"$target_root_dir/$bin_dir/$jar.archiveName",
+		"$target_root_dir/$bin_dir/$jar.baseName-$jar.version"+".zip");
+	delete ("$target_root_dir/$bin_dir/$libs_dir")
+	delete ("$target_root_dir/$bin_dir/$logs_dir")
+	delete ("$project.projectDir/$bin_dir")
+}
+
+task slwRun {
+	doLast {
+		tasks.bootRun.exec()
+	}
+}
+
+clean.dependsOn(cleanRemove)
+build.dependsOn(buildDeploy)
